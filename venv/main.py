@@ -4,6 +4,7 @@
 '''
 
 # Importing libraries
+from tkinter import font
 import pygame
 from paddle import Paddle
 from ball import Ball
@@ -39,6 +40,9 @@ all_sprites_list.add(paddleA)
 all_sprites_list.add(paddleB)
 all_sprites_list.add(ball)
 
+# Initialize scores
+scoreA = 0
+scoreB = 0
 
 # Game Loop
 isRunning = True
@@ -67,16 +71,32 @@ while isRunning:
     # Game logic
     all_sprites_list.update()
 
-    # Check if ball in hitting any of the walls
-    if ball.rect.x >= 690 or ball.rect.x <= 0:
+    # Check if ball is hitting any of the walls
+    if ball.rect.x >= 690:
+        scoreB += 1
+        ball.velocity[0] = -ball.velocity[0]
+    if ball.rect.x <= 0:
+        scoreA += 1
         ball.velocity[0] = -ball.velocity[0]
     if ball.rect.y >= 490 or ball.rect.y <= 0:
         ball.velocity[1] = -ball.velocity[1]
+    
+    # Check if ball is hitting any of the paddles
+    if pygame.sprite.collide_mask(ball, paddleA) or pygame.sprite.collide_mask(ball, paddleB):
+        ball.bounce()
 
     # Draw to screen
     screen.fill(BLACK)      # Clear screen
     pygame.draw.line(screen, WHITE, [349,0], [349,500], 5)      # Draw net
     all_sprites_list.draw(screen)     # Draw sprites all at once
+
+    # Display scores
+    font = pygame.font.Font(None, 74)
+    text = font.render(str(scoreA), 1, WHITE)
+    screen.blit(text, (250,10))
+    text = font.render(str(scoreB), 1, WHITE)
+    screen.blit(text, (420,10))
+
     pygame.display.flip()       # Update screen
     clock.tick(60)      # Limit game to 60FPS
 

@@ -19,6 +19,10 @@ class Ball(pygame.sprite.Sprite):
         # Fetching the rect object that has the dimensions of the ball
         self.rect = self.image.get_rect()
 
+    def bounce(self):
+        self.velocity[0] = -self.velocity[0]
+        self.velocity[1] = randint(-8, 8)
+
     def update(self):
         self.rect.x += self.velocity[0]
         self.rect.y += self.velocity[1]
